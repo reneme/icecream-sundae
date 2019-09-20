@@ -41,7 +41,7 @@ public:
     NCursesInterface();
     virtual ~NCursesInterface();
 
-    virtual void triggerRedraw() override;
+    virtual void update() override;
     virtual int processInput() override;
 
     virtual int getInputFd() override
@@ -379,7 +379,7 @@ int NCursesInterface::processInput()
     if (current_host)
         Host::hosts.at(current_host)->highlighted = true;
 
-    triggerRedraw();
+    update();
     return consumed ? 0 : c;
 }
 
@@ -521,7 +521,7 @@ gboolean NCursesInterface::on_idle_draw(gpointer user_data)
 gboolean NCursesInterface::on_redraw_timer(gpointer user_data)
 {
     auto *self = static_cast<NCursesInterface*>(user_data);
-    self->triggerRedraw();
+    self->update();
     return TRUE;
 }
 
@@ -834,7 +834,7 @@ void NCursesInterface::doRedraw()
     refresh();
 }
 
-void NCursesInterface::triggerRedraw()
+void NCursesInterface::update()
 {
     if (!idle_source.get())
         idle_source.set(g_idle_add(reinterpret_cast<GSourceFunc>(on_idle_draw), this));
@@ -869,7 +869,7 @@ void NCursesInterface::init()
 
     redraw_source.set(g_timeout_add(1000, on_redraw_timer, this));
 
-    triggerRedraw();
+    update();
 }
 
 NCursesInterface::NCursesInterface() :

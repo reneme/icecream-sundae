@@ -21,7 +21,8 @@
 #include <glib.h>
 
 #include "simulator.hpp"
-#include "main.hpp"
+#include "info.hpp"
+#include "globals.hpp"
 
 #define MAX_HOSTS (10)
 #define MAX_JOBS (100)

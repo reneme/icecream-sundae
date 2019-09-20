@@ -25,8 +25,9 @@
 #include <icecc/comm.h>
 #include <poll.h>
 
-#include "main.hpp"
 #include "scheduler.hpp"
+#include "info.hpp"
+#include "globals.hpp"
 
 class IcecreamScheduler: public Scheduler {
 public:
@@ -171,7 +172,7 @@ bool IcecreamScheduler::process_message(MsgChannel *sched)
             Host::remove(m->hostid);
 
         if (interface)
-            interface->triggerRedraw();
+            interface->update();
         break;
     }
     case M_END:
@@ -212,7 +213,7 @@ void IcecreamScheduler::reconnect(std::string const &netname, std::string const 
 
     if (interface) {
         interface->resume();
-        interface->triggerRedraw();
+        interface->update();
     }
 }
 

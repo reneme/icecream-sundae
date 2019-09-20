@@ -10,8 +10,7 @@ project('icecream-sundae', 'cpp',
 
 icecc = dependency('icecc')
 glib = dependency('glib-2.0')
-
-ncurses = dependency('ncursesw')
+ncurses = dependency('ncursesw', required: not get_option('without-ncurses'))
 ncurses_cxxflag = '-DNCURSES_WIDECHAR'
 
 cxx = meson.get_compiler('cpp')
@@ -63,12 +62,25 @@ conf_data = configuration_data()
 conf_data.set('version', meson.project_version())
 configure_file(input: 'config.h.in', output: 'config.h', configuration: conf_data)
 
+lib_src_files = ['src/sundae.cpp', 'src/info.cpp', 'src/globals.cpp', 'src/scheduler.cpp', 'src/simulator.cpp']
+
+src_files = ['src/main.cpp', 'src/cli.cpp']
+if not get_option('without-ncurses')
+    src_files += ['src/draw.cpp']
+endif
+
+icecream_library = static_library('icecreamsundae', lib_src_files,
+                                  include_directories: incdir,
+                                  dependencies: deps,
+                                  install: true)
+
 icecream_sundae = executable('icecream-sundae',
-    ['src/main.cpp', 'src/draw.cpp', 'src/scheduler.cpp', 'src/simulator.cpp'],
+    src_files,
     include_directories: incdir,
     dependencies: deps,
     install : true,
-    cpp_args: ncurses_cxxflag
+    cpp_args: ncurses_cxxflag,
+    link_with: icecream_library
     )
 
 install_data('icecream-sundae.desktop',

@@ -1,0 +1,1 @@
+option('without-ncurses', type: 'boolean', value: false, description: 'Build without ncurses')

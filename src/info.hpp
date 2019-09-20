@@ -187,16 +187,23 @@ public:
     virtual std::string getSchedulerName() const = 0;
 };
 
-class UserInterface {
+class AbstractInterface {
+public:
+    AbstractInterface() {}
+    virtual ~AbstractInterface() {}
+
+    virtual void update() = 0;
+    virtual void suspend() = 0;
+    virtual void resume() = 0;
+};
+
+class UserInterface : public AbstractInterface {
 public:
     UserInterface() {}
     virtual ~UserInterface() {}
 
-    virtual void triggerRedraw() = 0;
     virtual int processInput() = 0;
     virtual int getInputFd() = 0;
-    virtual void suspend() = 0;
-    virtual void resume() = 0;
     virtual void set_anonymize(bool) = 0;
 };
 
@@ -236,10 +243,3 @@ public:
 private:
     guint m_source;
 };
-
-extern GMainLoop *main_loop;
-extern int total_remote_jobs;
-extern int total_local_jobs;
-extern std::unique_ptr<Scheduler> scheduler;
-extern std::unique_ptr<UserInterface> interface;
-
